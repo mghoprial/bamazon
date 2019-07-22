@@ -45,27 +45,35 @@ function start() {
         choices: ['0', '1', '2', '3', '4']
       }
     ]).then(function (answer) {
-      console.log("ordering " + answer.unitQuestion + " unit(s)");
+      console.log("checking inventory for " + answer.unitQuestion + " unit(s)");
       // select stock quantity from our products table
       connection.query(`SELECT * FROM products WHERE ID =${answer.idQuestion}`, function (err, res) {
         if (err) throw err;
-        console.log(res);
+
         var itemInStock = res[0].stock_quantity;
         // console.log(itemInStock);
         // check if item is in stock
         // if not, run message saying "not enough units available"
         if (answer.unitQuestion > itemInStock) {
           console.log("not enough units!")
+          start();
         }
         else {
           // if so, subtract number of units purchased from stock_quantity
           var newResult = itemInStock - answer.unitQuestion;
           connection.query(`UPDATE products SET stock_quantity = ${newResult} WHERE ID=${answer.idQuestion}`)
-          console.log("you purchased an " + res[0].product_name)
-        }
+          if (itemInStock === 1) {
+            console.log("you purchased a " + res[0].product_name + " for " + "$" + res[0].price)
+          }
+          else if (itemInStock > 1) {
+            console.log("you purchased " + answer.unitQuestion + " " + res[0].product_name + " for " + "$" + res[0].price)
+            start();
+          }
 
-      });
+        };
 
+      })
     })
+
 }
 
