@@ -24,7 +24,7 @@ CREATE TABLE products
     (product_name, department_name, price, stock_quantity)
 
   VALUES
-    ('mp3 player', 'electronics', 6, 10),
+    ('mp3 player', 'electronics', 3, 10),
     ('headphones', 'electronics', 50, 50),
     ('tv', 'electronics', 400, 25),
     ('shirt', 'clothing', 10, 100),
@@ -35,13 +35,7 @@ CREATE TABLE products
     ('toenail clippers', 'bathroom', 4, 50),
     ('banana', 'food', 3, 100);
 
+SELECT * FROM products;
 
-  -- INSERT INTO departments
-  --   (department_name, over_head_costs)
-  -- VALUES
-  --   ('food', 500),
-  --   ('electronics', 450),
-  --   ('bathroom', 325),
-  --   ('exercise', 500),
-  --   ('clothing', 500)
-
+  SELECT id, product_name
+  FROM products

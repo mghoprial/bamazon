@@ -47,9 +47,9 @@ function start() {
     ]).then(function (answer) {
       console.log("checking inventory for " + answer.unitQuestion + " unit(s)");
       // select stock quantity from our products table
-      connection.query(`SELECT * FROM products WHERE ID =${answer.idQuestion}`, function (err, res) {
+      connection.query("SELECT * FROM products WHERE id = ? ", [answer.idQuestion], function (err, res) {
         if (err) throw err;
-
+        console.log(res);
         var itemInStock = res[0].stock_quantity;
         // console.log(itemInStock);
         // check if item is in stock
@@ -61,14 +61,15 @@ function start() {
         else {
           // if so, subtract number of units purchased from stock_quantity
           var newResult = itemInStock - answer.unitQuestion;
-          connection.query(`UPDATE products SET stock_quantity = ${newResult} WHERE ID=${answer.idQuestion}`)
-          if (itemInStock === 1) {
-            console.log("you purchased a " + res[0].product_name + " for " + "$" + res[0].price)
-          }
-          else if (itemInStock > 1) {
-            console.log("you purchased " + answer.unitQuestion + " " + res[0].product_name + " for " + "$" + res[0].price)
-            start();
-          }
+          connection.query(`UPDATE products SET stock_quantity = ?  WHERE id=?`, [newResult, answer.idQuestion], function () {
+            if (itemInStock === 1) {
+              console.log("you purchased a " + res[0].product_name + " for " + "$" + res[0].price)
+            }
+            else if (itemInStock > 1) {
+              console.log("you purchased " + answer.unitQuestion + " " + res[0].product_name + " for " + "$" + res[0].price)
+              start();
+            }
+          })
 
         };
 
